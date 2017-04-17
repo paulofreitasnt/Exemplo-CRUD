@@ -5,7 +5,9 @@
  */
 package com.ifpb.login.visao;
 
+import com.ifpb.login.controle.UsuarioDaoBinario;
 import com.ifpb.login.modelo.Usuario;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,8 +18,20 @@ import javax.swing.JOptionPane;
  * @author paulo
  */
 public class TelaCadastroUsuario extends javax.swing.JFrame {
-    
-    public TelaCadastroUsuario() {   
+
+    private UsuarioDaoBinario dao;
+
+    public TelaCadastroUsuario() {
+
+        try {
+            dao = new UsuarioDaoBinario();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
         initComponents();
     }
 
@@ -203,43 +217,51 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
         Usuario usuario = new Usuario();
         usuario.setEmail(campoEmail.getText());
         usuario.setNome(campoNome.getText());
-        
-        if(jRadioButton1.isSelected()){
+
+        if (jRadioButton1.isSelected()) {
             usuario.setSexo('M');
-        }else if(jRadioButton2.isSelected()){
+        } else if (jRadioButton2.isSelected()) {
             usuario.setSexo('F');
         }
-        
+
         DateTimeFormatter formater = DateTimeFormatter.
                 ofPattern("dd/MM/yyyy");
-        try{
+        try {
             LocalDate nascimento = LocalDate.
-                parse(campoNascimento.getText(),
-                        formater);
+                    parse(campoNascimento.getText(),
+                            formater);
             usuario.setNascimento(nascimento);
-        }catch(DateTimeParseException ex){
+        } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null,
                     "Data inválida", "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
         }
-        
-        usuario.setCargo((String)jComboBox1.
+
+        usuario.setCargo((String) jComboBox1.
                 getSelectedItem());
-        
+
         usuario.setSenha(new String(campoSenha.getPassword()));
-        
-        if(TelaLogin.dao.create(usuario)){
+
+        try {
+            if (dao.create(usuario)) {
+
+                JOptionPane.showMessageDialog(null,
+                        "Cadastrado com sucesso");
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Já existe um usuário com esse e-mail",
+                        "Mensagem de erro",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null,
-                    "Cadastrado com sucesso");
-        }else{
-            JOptionPane.showMessageDialog(null,
-                    "Já existe um usuário com esse e-mail",
-                    "Mensagem de erro",
-                    JOptionPane.ERROR_MESSAGE);
+                "Falha na conexão com o arquivo",
+                "Mensagem de Erro",
+                JOptionPane.ERROR_MESSAGE);
         }
-        
+
         this.dispose();
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

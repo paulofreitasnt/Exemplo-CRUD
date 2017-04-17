@@ -5,21 +5,28 @@
  */
 package com.ifpb.login.visao;
 
-import com.ifpb.login.controle.UsuarioDao;
+import com.ifpb.login.controle.UsuarioDaoBinario;
 import com.ifpb.login.modelo.Usuario;
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author paulo
  */
-
 public class TelaLogin extends javax.swing.JFrame {
 
-    public static UsuarioDao dao;
-    
+    private UsuarioDaoBinario dao;
+
     public TelaLogin() {
-        dao = new UsuarioDao();
+        try {
+            dao = new UsuarioDaoBinario();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         initComponents();
     }
 
@@ -147,26 +154,36 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Usuario usuario = dao.read(campoEmail.getText());
         
-        if(usuario == null){
+        Usuario usuario = null;
+
+        try {
+            usuario = dao.read(campoEmail.getText());
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        if (usuario == null) {
             JOptionPane.showMessageDialog(null,
                     "Usuário não encontrado",
                     "Falha ao autenticar",
                     JOptionPane.ERROR_MESSAGE);
-        }else{
+        } else {
             String senha = new String(campoSenha.getPassword());
-            if(usuario.autenticar(campoEmail.getText(), senha)){
+            if (usuario.autenticar(campoEmail.getText(), senha)) {
                 JOptionPane.showMessageDialog(null,
                         "Bem vindo!");
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null,
-                        "Dados incorretos", 
+                        "Dados incorretos",
                         "Falha ao autenticar",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
