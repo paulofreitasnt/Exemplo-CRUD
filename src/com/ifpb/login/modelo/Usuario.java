@@ -69,6 +69,10 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+    
     @Override
     public String toString() {
         return "Usuario{" + "email=" + email + ", nome=" + nome + ", sexo=" + sexo + ", nascimento=" + nascimento + ", cargo=" + cargo + '}';
