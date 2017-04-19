@@ -295,6 +295,8 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
             botaoSalvar.setEnabled(true);
             botaoExcluir.setEnabled(true);
 
+            campoEmail.setEditable(false);
+            
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed

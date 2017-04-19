@@ -65,17 +65,20 @@ public class UsuarioDaoBinario {
 
     }
 
-    public boolean delete(Usuario u) throws IOException, ClassNotFoundException {
+    public boolean delete(String email) throws IOException, ClassNotFoundException {
 
         List<Usuario> usuarios = list();
 
-        if (usuarios.remove(u)) {
-            atualizarArquivo(usuarios);
-            return true;
-
-        } else {
-            return false;
+        for(Usuario u : usuarios){
+        
+            if(u.getEmail().equals(email)){
+                usuarios.remove(u);
+                atualizarArquivo(usuarios);
+                return true;
+            }
         }
+        return false;
+        
     }
 
     public boolean update(Usuario u) throws IOException, ClassNotFoundException {
