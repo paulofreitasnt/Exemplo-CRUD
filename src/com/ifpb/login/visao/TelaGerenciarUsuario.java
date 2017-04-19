@@ -6,6 +6,8 @@
 package com.ifpb.login.visao;
 
 import com.ifpb.login.controle.UsuarioDaoBinario;
+import com.ifpb.login.excecoes.EmailInvalidoException;
+import com.ifpb.login.excecoes.SenhaInvalidaException;
 import com.ifpb.login.modelo.Usuario;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -274,7 +276,7 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                     "Usuário não encontrado",
                     "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
-        } else {  
+        } else {
             campoNome.setText(u.getNome());
 
             if (u.getSexo() == 'M') {
@@ -334,43 +336,40 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
 
     private void botaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarActionPerformed
         Usuario usuario = new Usuario();
-        usuario.setEmail(campoEmail.getText());
-        usuario.setNome(campoNome.getText());
-
-        if (jRadioButton1.isSelected()) {
-            usuario.setSexo('M');
-        } else if (jRadioButton2.isSelected()) {
-            usuario.setSexo('F');
-        }
-
-        DateTimeFormatter formater = DateTimeFormatter.
-                ofPattern("dd/MM/yyyy");
         try {
+            usuario.setEmail(campoEmail.getText());
+            usuario.setNome(campoNome.getText());
+
+            if (jRadioButton1.isSelected()) {
+                usuario.setSexo('M');
+            } else if (jRadioButton2.isSelected()) {
+                usuario.setSexo('F');
+            }
+
+            DateTimeFormatter formater = DateTimeFormatter.
+                    ofPattern("dd/MM/yyyy");
+
             LocalDate nascimento = LocalDate.
                     parse(campoNascimento.getText(),
                             formater);
             usuario.setNascimento(nascimento);
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Data inválida", "Mensagem de erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
 
-        usuario.setCargo((String) jComboBox1.
-                getSelectedItem());
+            usuario.setCargo(
+                    (String) jComboBox1.
+                    getSelectedItem());
 
-        usuario.setSenha(new String(campoSenha.getPassword()));
+            usuario.setSenha(
+                    new String(campoSenha.getPassword()));
 
-        try{
-            if(dao.update(usuario)){
+            if (dao.update(usuario)) {
                 JOptionPane.showMessageDialog(null,
                         "Atualizado com sucesso");
                 this.dispose();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null,
-                    "Falha ao atualizar",
-                    "Mensagem de erro",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Falha ao atualizar",
+                        "Mensagem de erro",
+                        JOptionPane.ERROR_MESSAGE);
                 this.dispose();
             }
         } catch (IOException | ClassNotFoundException ex) {
@@ -378,8 +377,20 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                     "Falha na conexão com o arquivo",
                     "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Data inválida", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (SenhaInvalidaException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Senha não pode ser vazia", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (EmailInvalidoException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "E-mail não pode ser vazio", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_botaoSalvarActionPerformed
 
     /**
@@ -396,16 +407,24 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaGerenciarUsuario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>

@@ -1,5 +1,7 @@
 package com.ifpb.login.modelo;
 
+import com.ifpb.login.excecoes.EmailInvalidoException;
+import com.ifpb.login.excecoes.SenhaInvalidaException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -29,7 +31,8 @@ public class Usuario implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws EmailInvalidoException {
+        if(email.equals("")) throw new EmailInvalidoException();
         this.email = email;
     }
 
@@ -65,7 +68,8 @@ public class Usuario implements Serializable {
         this.cargo = cargo;
     }
 
-    public void setSenha(String senha) {
+    public void setSenha(String senha) throws SenhaInvalidaException {
+        if(senha.equals("")) throw new SenhaInvalidaException();
         this.senha = senha;
     }
 

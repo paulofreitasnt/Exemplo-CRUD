@@ -6,11 +6,15 @@
 package com.ifpb.login.visao;
 
 import com.ifpb.login.controle.UsuarioDaoBinario;
+import com.ifpb.login.excecoes.EmailInvalidoException;
+import com.ifpb.login.excecoes.SenhaInvalidaException;
 import com.ifpb.login.modelo.Usuario;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -215,52 +219,61 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Usuario usuario = new Usuario();
-        usuario.setEmail(campoEmail.getText());
-        usuario.setNome(campoNome.getText());
-
-        if (jRadioButton1.isSelected()) {
-            usuario.setSexo('M');
-        } else if (jRadioButton2.isSelected()) {
-            usuario.setSexo('F');
-        }
-
-        DateTimeFormatter formater = DateTimeFormatter.
-                ofPattern("dd/MM/yyyy");
         try {
+
+            usuario.setEmail(campoEmail.getText());
+
+            usuario.setNome(campoNome.getText());
+
+            if (jRadioButton1.isSelected()) {
+                usuario.setSexo('M');
+            } else if (jRadioButton2.isSelected()) {
+                usuario.setSexo('F');
+            }
+
+            DateTimeFormatter formater = DateTimeFormatter.
+                    ofPattern("dd/MM/yyyy");
+
+            usuario.setCargo((String) jComboBox1.
+                    getSelectedItem());
+
+            usuario.setSenha(new String(campoSenha.getPassword()));
+
             LocalDate nascimento = LocalDate.
                     parse(campoNascimento.getText(),
                             formater);
             usuario.setNascimento(nascimento);
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Data inválida", "Mensagem de erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
 
-        usuario.setCargo((String) jComboBox1.
-                getSelectedItem());
-
-        usuario.setSenha(new String(campoSenha.getPassword()));
-
-        try {
             if (dao.create(usuario)) {
 
                 JOptionPane.showMessageDialog(null,
                         "Cadastrado com sucesso");
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null,
                         "Já existe um usuário com esse e-mail",
                         "Mensagem de erro",
                         JOptionPane.ERROR_MESSAGE);
             }
+
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Data inválida", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null,
-                "Falha na conexão com o arquivo",
-                "Mensagem de Erro",
-                JOptionPane.ERROR_MESSAGE);
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (EmailInvalidoException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "E-mail não pode ser vazio", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (SenhaInvalidaException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Senha não pode ser vazia", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-        this.dispose();
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
