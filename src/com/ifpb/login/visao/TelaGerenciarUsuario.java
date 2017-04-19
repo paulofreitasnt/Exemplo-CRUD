@@ -140,11 +140,21 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
         botaoExcluir.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         botaoExcluir.setText("Excluir");
         botaoExcluir.setEnabled(false);
+        botaoExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirActionPerformed(evt);
+            }
+        });
 
         botaoSalvar.setBackground(java.awt.Color.green);
         botaoSalvar.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         botaoSalvar.setText("Salvar");
         botaoSalvar.setEnabled(false);
+        botaoSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoSalvarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -264,9 +274,7 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                     "Usuário não encontrado",
                     "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
-        } else {
-            System.out.println("OK");
-
+        } else {  
             campoNome.setText(u.getNome());
 
             if (u.getSexo() == 'M') {
@@ -281,7 +289,7 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
 
             DateTimeFormatter formatter
                     = DateTimeFormatter
-                            .ofPattern("dd/MM/yyyy");
+                    .ofPattern("dd/MM/yyyy");
             campoNascimento.setText(
                     u.getNascimento().format(formatter));
 
@@ -296,10 +304,83 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
             botaoExcluir.setEnabled(true);
 
             campoEmail.setEditable(false);
-            
+
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void botaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirActionPerformed
+
+        try {
+            if (dao.delete(campoEmail.getText())) {
+                JOptionPane.showMessageDialog(null,
+                        "Removido com sucesso");
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Falha ao remover usuário",
+                        "Mensagem de erro",
+                        JOptionPane.ERROR_MESSAGE);
+                this.dispose();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_botaoExcluirActionPerformed
+
+    private void botaoSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarActionPerformed
+        Usuario usuario = new Usuario();
+        usuario.setEmail(campoEmail.getText());
+        usuario.setNome(campoNome.getText());
+
+        if (jRadioButton1.isSelected()) {
+            usuario.setSexo('M');
+        } else if (jRadioButton2.isSelected()) {
+            usuario.setSexo('F');
+        }
+
+        DateTimeFormatter formater = DateTimeFormatter.
+                ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate nascimento = LocalDate.
+                    parse(campoNascimento.getText(),
+                            formater);
+            usuario.setNascimento(nascimento);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Data inválida", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        usuario.setCargo((String) jComboBox1.
+                getSelectedItem());
+
+        usuario.setSenha(new String(campoSenha.getPassword()));
+
+        try{
+            if(dao.update(usuario)){
+                JOptionPane.showMessageDialog(null,
+                        "Atualizado com sucesso");
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null,
+                    "Falha ao atualizar",
+                    "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+                this.dispose();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_botaoSalvarActionPerformed
 
     /**
      * @param args the command line arguments
