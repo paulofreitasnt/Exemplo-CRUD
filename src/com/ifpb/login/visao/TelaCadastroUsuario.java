@@ -5,16 +5,17 @@
  */
 package com.ifpb.login.visao;
 
+import com.ifpb.login.controle.UsuarioDao;
+import com.ifpb.login.controle.UsuarioDaoBanco;
 import com.ifpb.login.controle.UsuarioDaoBinario;
 import com.ifpb.login.excecoes.EmailInvalidoException;
 import com.ifpb.login.excecoes.SenhaInvalidaException;
 import com.ifpb.login.modelo.Usuario;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,19 +24,12 @@ import javax.swing.JOptionPane;
  */
 public class TelaCadastroUsuario extends javax.swing.JFrame {
 
-    private UsuarioDaoBinario dao;
+    private UsuarioDao dao;
 
     public TelaCadastroUsuario() {
 
-        try {
-            dao = new UsuarioDaoBinario();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
-                    "Mensagem de Erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-
+        dao = new UsuarioDaoBanco();
+        
         initComponents();
     }
 
@@ -262,7 +256,7 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
+                    "Falha na conexão",
                     "Mensagem de Erro",
                     JOptionPane.ERROR_MESSAGE);
         } catch (EmailInvalidoException ex) {
@@ -272,6 +266,10 @@ public class TelaCadastroUsuario extends javax.swing.JFrame {
         } catch (SenhaInvalidaException ex) {
             JOptionPane.showMessageDialog(null,
                     "Senha não pode ser vazia", "Mensagem de erro",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Já existe um usuário com esse e-mail", "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
         }
 

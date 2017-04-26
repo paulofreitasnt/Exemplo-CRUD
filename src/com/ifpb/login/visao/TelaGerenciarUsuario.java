@@ -5,11 +5,14 @@
  */
 package com.ifpb.login.visao;
 
+import com.ifpb.login.controle.UsuarioDao;
+import com.ifpb.login.controle.UsuarioDaoBanco;
 import com.ifpb.login.controle.UsuarioDaoBinario;
 import com.ifpb.login.excecoes.EmailInvalidoException;
 import com.ifpb.login.excecoes.SenhaInvalidaException;
 import com.ifpb.login.modelo.Usuario;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -24,18 +27,11 @@ import javax.swing.JPasswordField;
  */
 public class TelaGerenciarUsuario extends javax.swing.JFrame {
 
-    private UsuarioDaoBinario dao;
+    private UsuarioDao dao;
 
     public TelaGerenciarUsuario() {
 
-        try {
-            dao = new UsuarioDaoBinario();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
-                    "Mensagem de Erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        dao = new UsuarioDaoBanco();
 
         initComponents();
 
@@ -264,9 +260,9 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
 
         try {
             u = dao.read(campoEmail.getText());
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
+                    "Falha na conexão",
                     "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -325,7 +321,7 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 this.dispose();
             }
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(null,
                     "Falha na conexão com o arquivo",
                     "Mensagem de erro",
@@ -372,7 +368,7 @@ public class TelaGerenciarUsuario extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 this.dispose();
             }
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(null,
                     "Falha na conexão com o arquivo",
                     "Mensagem de erro",

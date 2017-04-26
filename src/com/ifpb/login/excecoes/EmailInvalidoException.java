@@ -1,5 +1,5 @@
 package com.ifpb.login.excecoes;
 
-public class EmailInvalidoException extends Exception{
+public class EmailInvalidoException extends RuntimeException{
     
 }

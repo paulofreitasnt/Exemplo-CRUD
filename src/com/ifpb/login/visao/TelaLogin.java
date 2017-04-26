@@ -5,9 +5,12 @@
  */
 package com.ifpb.login.visao;
 
+import com.ifpb.login.controle.UsuarioDao;
+import com.ifpb.login.controle.UsuarioDaoBanco;
 import com.ifpb.login.controle.UsuarioDaoBinario;
 import com.ifpb.login.modelo.Usuario;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -16,17 +19,12 @@ import javax.swing.JOptionPane;
  */
 public class TelaLogin extends javax.swing.JFrame {
 
-    private UsuarioDaoBinario dao;
+    private UsuarioDao dao;
 
     public TelaLogin() {
-        try {
-            dao = new UsuarioDaoBinario();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
-                    "Mensagem de Erro",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+
+        dao = new UsuarioDaoBanco();
+        
         initComponents();
     }
 
@@ -159,9 +157,9 @@ public class TelaLogin extends javax.swing.JFrame {
 
         try {
             usuario = dao.read(campoEmail.getText());
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(null,
-                    "Falha na conexão com o arquivo",
+                    "Falha na conexão",
                     "Mensagem de Erro",
                     JOptionPane.ERROR_MESSAGE);
         }

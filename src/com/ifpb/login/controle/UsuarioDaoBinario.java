@@ -9,19 +9,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
-public class UsuarioDaoBinario {
+public class UsuarioDaoBinario implements UsuarioDao {
 
     private File arquivo;
 
-    public UsuarioDaoBinario() throws IOException {
+    public UsuarioDaoBinario(){
         arquivo = new File("Usuarios.bin");
 
         if (!arquivo.exists()) {
-            arquivo.createNewFile();
+            try{
+                arquivo.createNewFile();
+            }catch(IOException ex){
+                JOptionPane.showMessageDialog(null,
+                    "Falha na conexão com o arquivo",
+                    "Mensagem de Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
+    @Override
     public List<Usuario> list() throws IOException, ClassNotFoundException {
 
         if (arquivo.length() > 0) {
@@ -35,6 +44,7 @@ public class UsuarioDaoBinario {
         }
     }
 
+    @Override
     public Usuario read(String email) throws IOException, ClassNotFoundException {
 
         List<Usuario> usuarios = list();
@@ -47,6 +57,7 @@ public class UsuarioDaoBinario {
         return null;
     }
 
+    @Override
     public boolean create(Usuario u) throws IOException, ClassNotFoundException {
 
         List<Usuario> usuarios = list();
@@ -65,6 +76,7 @@ public class UsuarioDaoBinario {
 
     }
 
+    @Override
     public boolean delete(String email) throws IOException, ClassNotFoundException {
 
         List<Usuario> usuarios = list();
@@ -81,6 +93,7 @@ public class UsuarioDaoBinario {
         
     }
 
+    @Override
     public boolean update(Usuario u) throws IOException, ClassNotFoundException {
 
         List<Usuario> usuarios = list();
